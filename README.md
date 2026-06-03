@@ -133,7 +133,6 @@ Replace `<version>` placeholders with your released coordinates:
           <opaqueMixerChain>true</opaqueMixerChain>
           <complexifyBooleans>true</complexifyBooleans>
           <tryFinallyNoise>true</tryFinallyNoise>
-          <selfCheck>true</selfCheck>
           <arrayIntCrypt>true</arrayIntCrypt>
           <arrayCharCrypt>true</arrayCharCrypt>
           <arrayDoubleCrypt>true</arrayDoubleCrypt>
