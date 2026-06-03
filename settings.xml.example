@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copy to %USERPROFILE%\.m2\settings.xml (Windows) or ~/.m2/settings.xml (Unix).
+  Server <id> must be exactly: central
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+  <servers>
+    <server>
+      <id>central</id>
+      <username><!-- Central Portal token username --></username>
+      <password><!-- Central Portal token password --></password>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <id>gpg</id>
+      <properties>
+        <gpg.executable>C:\Program Files\GnuPG\bin\gpg.exe</gpg.executable>
+        <!-- Required: pin signing key (maven-gpg-plugin uses gpg --local-user).
+             Prefer LONG key id from: gpg --list-secret-keys support@pelock.com --keyid-format LONG
+             Example: <gpg.keyname>ABCD1234EF567890</gpg.keyname>
+             Email works only if unambiguous: <gpg.keyname>support@pelock.com</gpg.keyname> -->
+        <gpg.keyname>YOUR_LONG_KEY_ID_OR_UID</gpg.keyname>
+      </properties>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>gpg</activeProfile>
+  </activeProfiles>
+
+</settings>

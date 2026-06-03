@@ -1,0 +1,10 @@
+scripts/
+target/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.m2/
+DEPLOYING.md
+
