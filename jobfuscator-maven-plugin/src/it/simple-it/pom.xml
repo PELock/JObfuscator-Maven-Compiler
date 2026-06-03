@@ -13,6 +13,15 @@
     <maven.compiler.release>11</maven.compiler.release>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.pelock</groupId>
+      <artifactId>jobfuscator-annotations</artifactId>
+      <version>@project.version@</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

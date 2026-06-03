@@ -6,7 +6,7 @@
 
   <groupId>com.pelock</groupId>
   <artifactId>jobfuscator-parent</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <packaging>pom</packaging>
 
   <name>JObfuscator</name>
@@ -35,7 +35,7 @@
     <connection>scm:git:git://github.com/PELock/JObfuscator-Maven-Compiler.git</connection>
     <developerConnection>scm:git:ssh://github.com/PELock/JObfuscator-Maven-Compiler.git</developerConnection>
     <url>https://github.com/PELock/JObfuscator-Maven-Compiler</url>
-    <tag>v1.0.2</tag>
+    <tag>v1.0.3</tag>
   </scm>
 
   <issueManagement>
@@ -44,6 +44,7 @@
   </issueManagement>
 
   <modules>
+    <module>jobfuscator-annotations</module>
     <module>jobfuscator-client</module>
     <module>jobfuscator-maven-plugin</module>
   </modules>
@@ -74,6 +75,11 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.pelock</groupId>
+        <artifactId>jobfuscator-annotations</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.pelock</groupId>

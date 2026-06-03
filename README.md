@@ -7,6 +7,7 @@ This repository provides:
 | Artifact | Role |
 |----------|------|
 | [jobfuscator-maven-plugin](https://central.sonatype.com/artifact/com.pelock/jobfuscator-maven-plugin) | Maven goal `jobfuscator:obfuscate-sources` (runs in `generate-sources`) |
+| [jobfuscator-annotations](https://central.sonatype.com/artifact/com.pelock/jobfuscator-annotations) | Compile-time `@Obfuscate` markers (`provided` scope) |
 | [jobfuscator-client](https://central.sonatype.com/artifact/com.pelock/jobfuscator-client) | Standalone Java client for the JObfuscator Web API |
 
 More documentation, downloads, and APIs:
@@ -41,7 +42,7 @@ Optional property for version alignment:
 
 ```xml
 <properties>
-  <jobfuscator.version><!-- e.g. 1.0.2 --></jobfuscator.version>
+  <jobfuscator.version><!-- e.g. 1.0.3 --></jobfuscator.version>
 </properties>
 
 <plugin>
@@ -65,9 +66,8 @@ mvn com.pelock:jobfuscator-maven-plugin:<version>:obfuscate-sources
 
 ```
 my-app/
-├── pom.xml
+├── pom.xml               ← plugin + jobfuscator-annotations (provided)
 └── src/main/java/com/example/
-    ├── Obfuscate.java    ← stub annotation (SOURCE retention), optional
     └── App.java          ← your code with @Obfuscate
 ```
 
@@ -83,14 +83,23 @@ Replace `<version>` placeholders with your released coordinates:
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
   <artifactId>my-app</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>11</maven.compiler.release>
     <jobfuscator.apiKey><!-- YOU-API-HERE or leave empty for DEMO VERSION --></jobfuscator.apiKey>    
-    <jobfuscator.version><!-- e.g. 1.0.2 --></jobfuscator.version>
+    <jobfuscator.version><!-- e.g. 1.0.3 --></jobfuscator.version>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.pelock</groupId>
+      <artifactId>jobfuscator-annotations</artifactId>
+      <version>${jobfuscator.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -150,6 +159,8 @@ Replace `<version>` placeholders with your released coordinates:
 ```java
 package com.example;
 
+import com.pelock.jobfuscator.Obfuscate;
+
 @Obfuscate
 public class App {
   public static void main(String[] args) {
@@ -158,7 +169,7 @@ public class App {
 }
 ```
 
-Copy the `@interface Obfuscate` stub from the subsection **Declaring `@Obfuscate` so `javac` accepts it** (later in this README).
+Add the `jobfuscator-annotations` dependency (see Example 2 and **Declaring `@Obfuscate` so `javac` accepts it** below).
 
 ### Example 4 — shell: full build with API key
 
@@ -174,10 +185,10 @@ mvn clean compile -Djobfuscator.skip=true
 
 ### Example 6 — shell: only run the plugin goal (no `<execution>` in `pom.xml`)
 
-Replace `1.0.2` with your plugin version:
+Replace `1.0.3` with your plugin version:
 
 ```bash
-mvn com.pelock:jobfuscator-maven-plugin:1.0.2:obfuscate-sources \
+mvn com.pelock:jobfuscator-maven-plugin:1.0.3:obfuscate-sources \
   -Djobfuscator.apiKey="YOUR-ACTIVATION-KEY"
 ```
 
@@ -309,43 +320,22 @@ JObfuscator recognises **`@Obfuscate`** in **Java source** to enable protection:
 
 ### Declaring `@Obfuscate` so `javac` accepts it
 
-The compiler needs an **`@Obfuscate`** type. Until you use an official annotation library from PELock (if distributed separately), a **SOURCE**-retention stub is enough for compiling **original** sources:
+The compiler needs an **`@Obfuscate`** type. Add the published annotations JAR (compile-time only; **SOURCE** retention — not required at runtime):
 
-```java
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Documented
-@Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface Obfuscate {
-  boolean mix_code_flow() default true;
-  boolean rename_variables() default true;
-  boolean rename_methods() default true;
-  boolean shuffle_methods() default true;
-  boolean ints_math_crypt() default true;
-  boolean crypt_strings() default true;
-  boolean string_split() default true;
-  boolean ints_to_arrays() default true;
-  boolean dbls_to_arrays() default true;
-  boolean dbls_math_crypt() default true;
-  boolean string_char_vault() default true;
-  boolean ints_from_double_math() default true;
-  boolean opaque_mixer_chain() default true;
-  boolean complexify_booleans() default true;
-  boolean try_finally_noise() default true;
-  boolean array_int_crypt() default true;
-  boolean array_char_crypt() default true;
-  boolean array_double_crypt() default true;
-  boolean array_string_crypt() default true;
-  boolean self_check() default true;  
-}
+```xml
+<dependency>
+  <groupId>com.pelock</groupId>
+  <artifactId>jobfuscator-annotations</artifactId>
+  <version>${jobfuscator.version}</version>
+  <scope>provided</scope>
+</dependency>
 ```
 
-For marker-only usage you can start from `@interface Obfuscate {}` and narrow `@Target` as needed.
+Import in source: `import com.pelock.jobfuscator.Obfuscate;`
+
+The full attribute list lives in [`Obfuscate.java`](jobfuscator-annotations/src/main/java/com/pelock/jobfuscator/Obfuscate.java) (snake_case names aligned with the Web API). For marker-only usage, `@Obfuscate` with no attributes is enough.
+
+**Offline / no Maven:** you may still copy a local **SOURCE**-retention `@interface Obfuscate` stub into your tree (same shape as the library type above).
 
 ### Example — entire class
 
@@ -469,6 +459,21 @@ If you **disable strategies globally** in the Maven `<configuration>`, the remot
 
 ---
 
+## Annotations library (`jobfuscator-annotations`)
+
+```xml
+<dependency>
+  <groupId>com.pelock</groupId>
+  <artifactId>jobfuscator-annotations</artifactId>
+  <version>${jobfuscator.version}</version>
+  <scope>provided</scope>
+</dependency>
+```
+
+Use with the Maven plugin or when authoring sources that call the Web API with `@Obfuscate` in the text.
+
+---
+
 ## Standalone Java client (`jobfuscator-client`)
 
 ```xml
@@ -489,10 +494,10 @@ Use `com.pelock.jobfuscator.JObfuscatorClient`: `obfuscateJavaSource(String)`, `
 mvn clean install
 ```
 
-Optional Invoker IT profile (offline sample with `<skip>true</skip>`):
+Optional Invoker IT profile (offline sample with `<skip>true</skip>`; run from repository root):
 
 ```bash
-mvn clean install -Pinvoker-tests
+mvn clean verify -Pinvoker-tests
 ```
 
 ---

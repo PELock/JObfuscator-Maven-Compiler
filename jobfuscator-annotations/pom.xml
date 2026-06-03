@@ -10,30 +10,17 @@
     <version>1.0.3</version>
   </parent>
 
-  <artifactId>jobfuscator-client</artifactId>
+  <artifactId>jobfuscator-annotations</artifactId>
   <packaging>jar</packaging>
 
-  <name>JObfuscator Java client</name>
+  <name>JObfuscator annotations</name>
+  <description>Compile-time @Obfuscate markers for JObfuscator source obfuscation</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.httpcomponents.client5</groupId>
-      <artifactId>httpclient5</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>mockwebserver</artifactId>
-      <version>${mockwebserver.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
